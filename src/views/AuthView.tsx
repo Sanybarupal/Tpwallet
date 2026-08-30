@@ -313,12 +313,12 @@ export const AuthView: React.FC = () => {
   // ----------------------------------------------------
   if (screenMode === 'CAROUSEL') {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between relative select-none overflow-x-hidden">
+      <div className="h-full bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between relative select-none overflow-y-auto no-scrollbar">
         {/* Top Sky Glow Atmospheric Gradient */}
-        <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-[#E0EDFF] via-[#EEF4FE] to-[#F7F8FA] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-80 bg-gradient-to-b from-[#E0EDFF] via-[#EEF4FE] to-[#F7F8FA] pointer-events-none" />
 
         {/* Content Container */}
-        <div className="relative z-10 flex-1 flex flex-col justify-between px-5 pt-8 pb-4 max-w-md mx-auto w-full">
+        <div className="relative z-10 flex-1 flex flex-col justify-between px-4 pt-4 pb-3 w-full">
           {/* Carousel Art & Text */}
           <div className="flex-1 flex flex-col items-center justify-center text-center">
             {/* 3D Graphic */}
@@ -516,7 +516,7 @@ export const AuthView: React.FC = () => {
   // ----------------------------------------------------
   if (screenMode === 'IMPORT_WALLET') {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-4 pb-6 max-w-md mx-auto w-full select-none">
+      <div className="h-full bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-4 pb-6 w-full select-none overflow-y-auto no-scrollbar">
         <div>
           {/* Top Bar with Back Arrow */}
           <div className="flex items-center justify-between py-2 -ml-2">
@@ -614,7 +614,7 @@ export const AuthView: React.FC = () => {
   // ----------------------------------------------------
   if (screenMode === 'SET_PASSWORD') {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-4 pb-6 max-w-md mx-auto w-full select-none">
+      <div className="h-full bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-4 pb-6 w-full select-none overflow-y-auto no-scrollbar">
         <div>
           {/* Top Bar with Back Arrow */}
           <div className="flex items-center justify-between py-2 -ml-2">
@@ -809,7 +809,7 @@ export const AuthView: React.FC = () => {
   // ----------------------------------------------------
   if (screenMode === 'GENERATE_KEY') {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-4 pb-6 max-w-md mx-auto w-full select-none">
+      <div className="h-full bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-4 pb-6 w-full select-none overflow-y-auto no-scrollbar">
         <div>
           <div className="flex items-center justify-between py-2 -ml-2">
             <button
@@ -920,7 +920,7 @@ export const AuthView: React.FC = () => {
   // ----------------------------------------------------
   if (screenMode === 'BIOMETRIC_SETUP') {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-6 pb-6 max-w-md mx-auto w-full select-none">
+      <div className="h-full bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-between px-5 pt-6 pb-6 w-full select-none overflow-y-auto no-scrollbar">
         <div className="flex-1 flex flex-col items-center justify-center text-center">
           <div className="relative mb-6">
             <div className={`h-24 w-24 rounded-3xl flex items-center justify-center transition-all ${
@@ -989,7 +989,7 @@ export const AuthView: React.FC = () => {
   // SCREEN: 2FA CHALLENGE (If enabled)
   // ----------------------------------------------------
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-center px-5 py-8 max-w-md mx-auto w-full select-none">
+    <div className="h-full bg-[#F7F8FA] text-[#1E2024] flex flex-col justify-center px-5 py-8 w-full select-none overflow-y-auto no-scrollbar">
       <div className="bg-white p-6 rounded-3xl border border-[#e5e7eb] shadow-xl space-y-4">
         <div className="text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#2980FE] border border-blue-100 mb-2">

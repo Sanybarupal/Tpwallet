@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  QrCode, Bell, Smartphone, Monitor, 
+  QrCode, Bell, 
   ChevronDown, Sun, Moon,
   Layers
 } from 'lucide-react';
@@ -9,9 +9,8 @@ import { CryptoIcon } from './CryptoIcons';
 
 export const MobileTopHeader: React.FC = () => {
   const { 
-    user, unreadNotifications, activeView, setActiveView, 
+    user, unreadNotifications, setActiveView, 
     openQRScanner, 
-    isDeviceFrameMode, setIsDeviceFrameMode,
     triggerHaptic, activeNetwork, setIsWalletDrawerOpen,
     theme, toggleTheme
   } = useAuth();
@@ -114,35 +113,6 @@ export const MobileTopHeader: React.FC = () => {
             </span>
           )}
         </button>
-
-        {/* APK Phone Frame / Desktop Toggle (Only visible on larger screens) */}
-        <div className="hidden md:flex items-center ml-1 pl-1 border-l border-[#e5e7eb] dark:border-[#2a3447]">
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic();
-              setIsDeviceFrameMode(!isDeviceFrameMode);
-            }}
-            className={`flex items-center space-x-1 px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition-all cursor-pointer ${
-              isDeviceFrameMode
-                ? 'bg-[#2980fe]/10 border-[#2980fe]/30 text-[#2980fe] shadow-xs'
-                : 'bg-[#f7f8fa] dark:bg-[#181f2e] border-[#e5e7eb] dark:border-[#2a3447] text-[#6b7280] dark:text-[#94a3b8] hover:text-[#1e2024] dark:hover:text-white'
-            }`}
-            title="Toggle between Mobile APK Phone Frame and Responsive Desktop View"
-          >
-            {isDeviceFrameMode ? (
-              <>
-                <Smartphone className="h-3.5 w-3.5 text-[#2980fe]" />
-                <span>APK View</span>
-              </>
-            ) : (
-              <>
-                <Monitor className="h-3.5 w-3.5 text-[#6b7280]" />
-                <span>Desktop</span>
-              </>
-            )}
-          </button>
-        </div>
       </div>
     </header>
   );
