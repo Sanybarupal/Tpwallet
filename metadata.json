@@ -1,0 +1,6 @@
+{
+  "name": "TokenPocket - Multi-Chain Web3 Vault",
+  "description": "Your multi-chain Web3 wallet portal, safe & easy. Supporting TRON, ETH, BSC, Polygon, and Solana with institutional security.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
