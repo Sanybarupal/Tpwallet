@@ -139,8 +139,11 @@ export const AuthView: React.FC = () => {
         setIsBiometricScanning(false);
         setBiometricSuccess(true);
         triggerHaptic();
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        setBiometricSuccess(false);
+        // Mark completion before finalizing so a mobile WebAuthn/browser
+        // remount cannot leave the user stranded on this setup screen.
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('tpwallet_biometric_completed', 'true');
+        }
         await finalizeAccountCreation();
       } else {
         setIsBiometricScanning(false);
@@ -171,6 +174,9 @@ export const AuthView: React.FC = () => {
         firstName: 'TP',
         lastName: 'Holder',
       });
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('tpwallet_biometric_completed');
+      }
       // Explicitly select Home after account creation so both biometric and skip flows land there.
       setActiveView('dashboard');
     } catch (err: unknown) {
@@ -178,6 +184,15 @@ export const AuthView: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (screenMode !== 'BIOMETRIC_SETUP' || typeof window === 'undefined') return;
+    if (sessionStorage.getItem('tpwallet_biometric_completed') !== 'true') return;
+
+    // Some mobile browsers remount the page after the native biometric sheet closes.
+    // Resume the already verified flow instead of showing biometric setup again.
+    void finalizeAccountCreation();
+  }, [screenMode]);
 
   const handleCopySeed = () => {
     triggerHaptic();
