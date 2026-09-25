@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Eye, EyeOff, ChevronLeft, Check, Lock, Shield, 
   Key, Smartphone, ArrowRight, UserCheck, AlertCircle,
@@ -49,6 +49,7 @@ export const AuthView: React.FC = () => {
   // Biometric simulation state
   const [isBiometricScanning, setIsBiometricScanning] = useState(false);
   const [biometricSuccess, setBiometricSuccess] = useState(false);
+  const accountFinalizationRef = useRef(false);
 
   // Quick Account / 2FA Fields
   const [email, setEmail] = useState('');
@@ -165,6 +166,8 @@ export const AuthView: React.FC = () => {
   };
 
   const finalizeAccountCreation = async () => {
+    if (accountFinalizationRef.current) return;
+    accountFinalizationRef.current = true;
     setIsLoading(true);
     try {
       const generatedEmail = email.trim() || `tp_${Date.now().toString().slice(-6)}@tokenpocket.pro`;
@@ -196,9 +199,9 @@ export const AuthView: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!user || screenMode !== 'BIOMETRIC_SETUP') return;
+    if (!user) return;
     setActiveView('dashboard');
-  }, [user, screenMode, setActiveView]);
+  }, [user, setActiveView]);
 
   const handleCopySeed = () => {
     triggerHaptic();
