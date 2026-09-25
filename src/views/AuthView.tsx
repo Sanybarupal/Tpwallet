@@ -128,6 +128,8 @@ export const AuthView: React.FC = () => {
   };
 
   const handleBiometricAuthenticate = async () => {
+    if (isLoading || isBiometricScanning || biometricSuccess) return;
+
     triggerHaptic();
     setIsBiometricScanning(true);
     setErrorMessage(null);
@@ -137,10 +139,9 @@ export const AuthView: React.FC = () => {
         setIsBiometricScanning(false);
         setBiometricSuccess(true);
         triggerHaptic();
-        setTimeout(async () => {
-          setBiometricSuccess(false);
-          await finalizeAccountCreation();
-        }, 1500);
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        setBiometricSuccess(false);
+        await finalizeAccountCreation();
       } else {
         setIsBiometricScanning(false);
         setErrorMessage(bioRes.error || 'System fingerprint verification failed');
