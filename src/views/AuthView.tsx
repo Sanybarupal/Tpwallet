@@ -186,13 +186,14 @@ export const AuthView: React.FC = () => {
   };
 
   useEffect(() => {
-    if (screenMode !== 'BIOMETRIC_SETUP' || typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return;
     if (sessionStorage.getItem('tpwallet_biometric_completed') !== 'true') return;
 
-    // Some mobile browsers remount the page after the native biometric sheet closes.
-    // Resume the already verified flow instead of showing biometric setup again.
+    // Mobile Chrome can remount the auth view after the native biometric sheet
+    // closes. Resume registration immediately, even if React reset screenMode.
+    setScreenMode('BIOMETRIC_SETUP');
     void finalizeAccountCreation();
-  }, [screenMode]);
+  }, []);
 
   const handleCopySeed = () => {
     triggerHaptic();
