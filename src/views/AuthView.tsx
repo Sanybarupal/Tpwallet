@@ -153,7 +153,10 @@ export const AuthView: React.FC = () => {
 
 
   const handleSkipBiometric = async () => {
+    if (isLoading || isBiometricScanning) return;
     triggerHaptic();
+    setErrorMessage(null);
+    setBiometricEnabled(false);
     await finalizeAccountCreation();
   };
 
