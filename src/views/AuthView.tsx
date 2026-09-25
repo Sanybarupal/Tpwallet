@@ -9,7 +9,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 export const AuthView: React.FC = () => {
-  const { login, register, triggerHaptic, authenticateBiometric, setActiveView } = useAuth();
+  const { user, login, register, triggerHaptic, authenticateBiometric, setActiveView } = useAuth();
 
   // Screen modes: 
   // 'CAROUSEL' (3 sliders) -> 'SET_PASSWORD' -> 'GENERATE_KEY' -> 'BIOMETRIC_SETUP' -> Home
@@ -194,6 +194,11 @@ export const AuthView: React.FC = () => {
     setScreenMode('BIOMETRIC_SETUP');
     void finalizeAccountCreation();
   }, []);
+
+  useEffect(() => {
+    if (!user || screenMode !== 'BIOMETRIC_SETUP') return;
+    setActiveView('dashboard');
+  }, [user, screenMode, setActiveView]);
 
   const handleCopySeed = () => {
     triggerHaptic();
