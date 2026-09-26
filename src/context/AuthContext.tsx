@@ -87,7 +87,7 @@ interface AuthContextType {
   transferBinance: (amount: number, direction: 'TO_VAULT' | 'TO_BINANCE') => Promise<{ success: boolean; message: string; txHash?: string }>;
 
   login: (payload: { email: string; password: string; totpCode?: string }) => Promise<{ requireTwoFactor?: boolean; message?: string }>;
-  register: (payload: { email: string; password: string; firstName: string; lastName: string }) => Promise<void>;
+  register: (payload: { email: string; password: string; firstName: string; lastName: string; postAuthView?: AppView }) => Promise<void>;
   logout: () => Promise<void>;
   refreshUserData: () => Promise<void>;
   refreshBalance: () => Promise<void>;
@@ -418,14 +418,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { requireTwoFactor: false };
   };
 
-  const register = async (payload: { email: string; password: string; firstName: string; lastName: string }) => {
+  const register = async (payload: { email: string; password: string; firstName: string; lastName: string; postAuthView?: AppView }) => {
     const res = await api.register(payload);
     if (res.token && res.user) {
       setStoredToken(res.token);
       setUser(res.user);
       if (res.balance) setBalance(res.balance);
       setViewMode('user');
-      setActiveView('dashboard');
+      setActiveView(payload.postAuthView ?? 'dashboard');
     }
   };
 
