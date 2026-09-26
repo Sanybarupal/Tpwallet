@@ -65,8 +65,13 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   if (!response.ok || data.success === false) {
     if (response.status === 401) {
       removeStoredToken();
+      throw new Error('Your session has expired. Please sign in again.');
     }
-    throw new Error(data.error || 'Network request failed');
+    if (response.status === 403) throw new Error('You are not authorized to perform this action.');
+    if (response.status === 404) throw new Error('Unable to save master password. Please try again.');
+    if (response.status === 409) throw new Error(data.error || 'Master password is already configured.');
+    if (response.status === 422) throw new Error(data.error || 'Please check the password details and try again.');
+    throw new Error(data.error || 'Unable to save master password. Please try again.');
   }
 
   return data as T;
