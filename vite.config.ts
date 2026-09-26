@@ -12,9 +12,9 @@ export default defineConfig(() => {
         name: 'disable-preview-hmr-client',
         enforce: 'post',
         transformIndexHtml(html) {
-          return html
-            .replace(/<script[^>]+src=["']\/@vite\/client["'][^>]*><\/script>/g, '')
-            .replace(/<script[^>]+src=["']\/\@vite\/client["'][^>]*><\/script>/g, '');
+          // Vite may inject the client with different attribute ordering or
+          // an absolute path. The preview proxy has no HMR WebSocket endpoint.
+          return html.replace(/<script\b[^>]*src=["'][^"']*\@vite\/client[^"']*["'][^>]*><\/script>/gi, '');
         },
       },
     ],
