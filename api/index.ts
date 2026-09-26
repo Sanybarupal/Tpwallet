@@ -9,7 +9,16 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-app.get('/api/health', (_req, res) => {
+// Vercel mounts this function at /api and strips that prefix before Express
+// receives the request. Normalize direct invocations as well so both forms work.
+app.use((req, _res, next) => {
+  if (req.url === '/api' || req.url.startsWith('/api/')) {
+    req.url = req.url.slice(4) || '/';
+  }
+  next();
+});
+
+app.get('/health', (_req, res) => {
   res.json({
     status: 'online',
     service: 'USDT Vault Enterprise Custody Engine',
@@ -18,16 +27,16 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/wallet', walletRoutes);
-app.use('/api/kyc', kycRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/auth', authRoutes);
+app.use('/wallet', walletRoutes);
+app.use('/kyc', kycRoutes);
+app.use('/admin', adminRoutes);
 
-app.use('/api', (_req, res) => {
+app.use((_req, res) => {
   res.status(404).json({ success: false, error: 'API endpoint not found.' });
 });
 
-app.use('/api', (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('[api] request failed', err);
   if (!res.headersSent) {
     res.status(500).json({ success: false, error: 'Unable to complete the request. Please try again.' });
