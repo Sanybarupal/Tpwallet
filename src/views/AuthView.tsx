@@ -140,11 +140,9 @@ export const AuthView: React.FC = () => {
         setIsBiometricScanning(false);
         setBiometricSuccess(true);
         triggerHaptic();
-        // Mark completion before finalizing so a mobile WebAuthn/browser
-        // remount cannot leave the user stranded on this setup screen.
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('tpwallet_biometric_completed', 'true');
-        }
+        await new Promise((resolve) => setTimeout(resolve, 900));
+        setBiometricSuccess(false);
+        setScreenMode('CAROUSEL');
         await finalizeAccountCreation();
       } else {
         setIsBiometricScanning(false);
@@ -162,6 +160,7 @@ export const AuthView: React.FC = () => {
     triggerHaptic();
     setErrorMessage(null);
     setBiometricEnabled(false);
+    setScreenMode('CAROUSEL');
     await finalizeAccountCreation();
   };
 
@@ -187,16 +186,6 @@ export const AuthView: React.FC = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (sessionStorage.getItem('tpwallet_biometric_completed') !== 'true') return;
-
-    // Mobile Chrome can remount the auth view after the native biometric sheet
-    // closes. Resume registration immediately, even if React reset screenMode.
-    setScreenMode('BIOMETRIC_SETUP');
-    void finalizeAccountCreation();
-  }, []);
 
   useEffect(() => {
     if (!user) return;
