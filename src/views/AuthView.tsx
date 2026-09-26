@@ -11,10 +11,9 @@ import { useAuth } from '../context/AuthContext';
 export const AuthView: React.FC = () => {
   const { user, login, register, triggerHaptic, authenticateBiometric } = useAuth();
 
-  // Screen modes: 
-  // 'CAROUSEL' (3 sliders) -> 'SET_PASSWORD' -> 'GENERATE_KEY' -> 'BIOMETRIC_SETUP' -> Home
-  // Or for Import: 'CAROUSEL' -> 'IMPORT_WALLET' -> 'SET_PASSWORD' -> 'BIOMETRIC_SETUP' -> Home
-  // '2FA_CHALLENGE' for existing 2FA logins
+  // Screen modes. Authentication completes directly into the authenticated app;
+  // biometric setup is optional and never blocks account creation or login.
+  // '2FA_CHALLENGE' is used only when the server requires 2FA.
   const [screenMode, setScreenMode] = useState<
     'CAROUSEL' | 'SET_PASSWORD' | 'GENERATE_KEY' | 'IMPORT_WALLET' | 'BIOMETRIC_SETUP' | '2FA_CHALLENGE'
   >('CAROUSEL');
@@ -27,7 +26,8 @@ export const AuthView: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [biometricEnabled, setBiometricEnabled] = useState(true);
+  // Biometric setup is optional and is never used as an authentication gate.
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(true);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
@@ -114,11 +114,9 @@ export const AuthView: React.FC = () => {
       return;
     }
 
-    if (flowType === 'CREATE') {
-      setScreenMode('GENERATE_KEY');
-    } else {
-      await finalizeAccountCreation();
-    }
+    // Password verification is the authentication boundary. Do not route a
+    // successfully verified user through seed or biometric setup screens.
+    await finalizeAccountCreation();
   };
 
   const handleKeyStepProceed = async () => {
@@ -174,10 +172,8 @@ export const AuthView: React.FC = () => {
         lastName: 'Holder',
         postAuthView: 'markets',
       });
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('tpwallet_biometric_completed');
-      }
     } catch (err: unknown) {
+      accountFinalizationRef.current = false;
       setErrorMessage(err instanceof Error ? err.message : 'Failed to finalize wallet creation');
       setIsLoading(false);
     }
