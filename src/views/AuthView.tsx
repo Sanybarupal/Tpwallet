@@ -9,7 +9,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 export const AuthView: React.FC = () => {
-  const { user, login, register, triggerHaptic, authenticateBiometric, setActiveView } = useAuth();
+  const { user, login, register, triggerHaptic, authenticateBiometric } = useAuth();
 
   // Screen modes: 
   // 'CAROUSEL' (3 sliders) -> 'SET_PASSWORD' -> 'GENERATE_KEY' -> 'BIOMETRIC_SETUP' -> Home
@@ -174,22 +174,16 @@ export const AuthView: React.FC = () => {
         password: password || 'TpPass123!Secure',
         firstName: 'TP',
         lastName: 'Holder',
+        postAuthView: 'markets',
       });
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('tpwallet_biometric_completed');
       }
-      // Explicitly select Home after account creation so both biometric and skip flows land there.
-      setActiveView('dashboard');
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : 'Failed to finalize wallet creation');
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (!user) return;
-    setActiveView('dashboard');
-  }, [user, setActiveView]);
 
   const handleCopySeed = () => {
     triggerHaptic();
