@@ -142,7 +142,6 @@ export const AuthView: React.FC = () => {
         triggerHaptic();
         await new Promise((resolve) => setTimeout(resolve, 900));
         setBiometricSuccess(false);
-        setScreenMode('CAROUSEL');
         await finalizeAccountCreation();
       } else {
         setIsBiometricScanning(false);
