@@ -49,7 +49,10 @@ async function startServer() {
   // Vite middleware for development vs static build in production
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      // The Express middleware server is not the WebSocket upgrade endpoint in
+      // the preview proxy. Disable Vite HMR here so the browser does not retry
+      // a socket that can never complete its handshake.
+      server: { middlewareMode: true, hmr: false, watch: null },
       appType: 'spa',
     });
     app.use(vite.middlewares);
