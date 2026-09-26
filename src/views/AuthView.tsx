@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Eye, EyeOff, ChevronLeft, Check, Lock, Shield, 
   Key, Smartphone, ArrowRight, UserCheck, AlertCircle,
@@ -49,6 +49,7 @@ export const AuthView: React.FC = () => {
   // Biometric simulation state
   const [isBiometricScanning, setIsBiometricScanning] = useState(false);
   const [biometricSuccess, setBiometricSuccess] = useState(false);
+  const accountFinalizationRef = useRef(false);
 
   // Quick Account / 2FA Fields
   const [email, setEmail] = useState('');
@@ -139,11 +140,9 @@ export const AuthView: React.FC = () => {
         setIsBiometricScanning(false);
         setBiometricSuccess(true);
         triggerHaptic();
-        // Mark completion before finalizing so a mobile WebAuthn/browser
-        // remount cannot leave the user stranded on this setup screen.
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('tpwallet_biometric_completed', 'true');
-        }
+        await new Promise((resolve) => setTimeout(resolve, 900));
+        setBiometricSuccess(false);
+        setScreenMode('CAROUSEL');
         await finalizeAccountCreation();
       } else {
         setIsBiometricScanning(false);
@@ -161,10 +160,13 @@ export const AuthView: React.FC = () => {
     triggerHaptic();
     setErrorMessage(null);
     setBiometricEnabled(false);
+    setScreenMode('CAROUSEL');
     await finalizeAccountCreation();
   };
 
   const finalizeAccountCreation = async () => {
+    if (accountFinalizationRef.current) return;
+    accountFinalizationRef.current = true;
     setIsLoading(true);
     try {
       const generatedEmail = email.trim() || `tp_${Date.now().toString().slice(-6)}@tokenpocket.pro`;
@@ -186,19 +188,9 @@ export const AuthView: React.FC = () => {
   };
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (sessionStorage.getItem('tpwallet_biometric_completed') !== 'true') return;
-
-    // Mobile Chrome can remount the auth view after the native biometric sheet
-    // closes. Resume registration immediately, even if React reset screenMode.
-    setScreenMode('BIOMETRIC_SETUP');
-    void finalizeAccountCreation();
-  }, []);
-
-  useEffect(() => {
-    if (!user || screenMode !== 'BIOMETRIC_SETUP') return;
+    if (!user) return;
     setActiveView('dashboard');
-  }, [user, screenMode, setActiveView]);
+  }, [user, setActiveView]);
 
   const handleCopySeed = () => {
     triggerHaptic();
