@@ -178,18 +178,13 @@ export const AuthView: React.FC = () => {
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('tpwallet_biometric_completed');
       }
-      // Explicitly select Home after account creation so both biometric and skip flows land there.
-      setActiveView('dashboard');
+        // Open the market page after onboarding completes so the biometric screen cannot reappear.
+      setActiveView('markets');
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : 'Failed to finalize wallet creation');
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (!user) return;
-    setActiveView('dashboard');
-  }, [user, setActiveView]);
 
   const handleCopySeed = () => {
     triggerHaptic();
