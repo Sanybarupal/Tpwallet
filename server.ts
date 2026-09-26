@@ -33,6 +33,12 @@ async function startServer() {
   app.use('/api/kyc', kycRoutes);
   app.use('/api/admin', adminRoutes);
 
+  // Return a JSON error for unknown API paths instead of Vite's HTML fallback.
+  // This keeps the client error parser reliable and makes missing deployments explicit.
+  app.use('/api', (_req: express.Request, res: express.Response) => {
+    res.status(404).json({ success: false, error: 'API endpoint not found.' });
+  });
+
   // Keep API failures JSON so the client never receives an HTML error page.
   app.use('/api', (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error('[api] request failed', err);

@@ -6,30 +6,19 @@ import {
 } from '../types';
 
 const TOKEN_KEY = 'usdt_vault_token';
-const LOGGED_OUT_KEY = 'usdt_vault_logged_out';
 
 export function getStoredToken(): string | null {
   if (typeof window === 'undefined') return null;
-  const token = localStorage.getItem(TOKEN_KEY);
-  if (token) return token;
-  // If user hasn't explicitly clicked logout, default to Alice's active demo session for instant live usability
-  if (localStorage.getItem(LOGGED_OUT_KEY) !== 'true') {
-    const demoToken = 'tok_alice_demo_session_token_2026';
-    localStorage.setItem(TOKEN_KEY, demoToken);
-    return demoToken;
-  }
-  return null;
+  return localStorage.getItem(TOKEN_KEY);
 }
 
 export function setStoredToken(token: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(LOGGED_OUT_KEY);
   localStorage.setItem(TOKEN_KEY, token);
 }
 
 export function removeStoredToken() {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(LOGGED_OUT_KEY, 'true');
   localStorage.removeItem(TOKEN_KEY);
 }
 
