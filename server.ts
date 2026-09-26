@@ -33,6 +33,13 @@ async function startServer() {
   app.use('/api/kyc', kycRoutes);
   app.use('/api/admin', adminRoutes);
 
+  // Keep API failures JSON so the client never receives an HTML error page.
+  app.use('/api', (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error('[api] request failed', err);
+    if (res.headersSent) return;
+    res.status(500).json({ success: false, error: 'Unable to complete the request. Please try again.' });
+  });
+
   // Vite middleware for development vs static build in production
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

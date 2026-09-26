@@ -49,7 +49,19 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers,
   });
 
-  const data = await response.json().catch(() => ({ success: false, error: 'Malformed response' }));
+  const responseText = await response.text();
+  let data: { success?: boolean; error?: string; [key: string]: unknown };
+
+  try {
+    data = responseText ? JSON.parse(responseText) : {};
+  } catch {
+    data = {
+      success: false,
+      error: response.ok
+        ? 'The server returned an invalid response. Please try again.'
+        : `Request failed with status ${response.status}. Please try again.`,
+    };
+  }
 
   if (!response.ok || data.success === false) {
     if (response.status === 401) {
@@ -58,7 +70,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     throw new Error(data.error || 'Network request failed');
   }
 
-  return data;
+  return data as T;
 }
 
 export const api = {
