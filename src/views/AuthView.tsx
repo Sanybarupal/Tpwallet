@@ -115,17 +115,15 @@ export const AuthView: React.FC = () => {
     }
 
     if (flowType === 'CREATE') {
-      // Move to Private Key generation screen
       setScreenMode('GENERATE_KEY');
     } else {
-      // Move to Biometric setup directly for import
-      setScreenMode('BIOMETRIC_SETUP');
+      await finalizeAccountCreation();
     }
   };
 
-  const handleKeyStepProceed = () => {
+  const handleKeyStepProceed = async () => {
     triggerHaptic();
-    setScreenMode('BIOMETRIC_SETUP');
+    await finalizeAccountCreation();
   };
 
   const handleBiometricAuthenticate = async () => {
@@ -920,7 +918,7 @@ export const AuthView: React.FC = () => {
             onClick={handleKeyStepProceed}
             className="w-full bg-[#2980FE] hover:bg-[#1E5BF0] text-white font-bold py-3.5 rounded-2xl text-sm transition-all shadow-md shadow-blue-500/20 flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
           >
-            <span>Next: Biometric Setup</span>
+            <span>Continue to Wallet</span>
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>
