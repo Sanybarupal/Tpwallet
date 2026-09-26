@@ -33,10 +33,20 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(endpoint, {
+  let response = await fetch(endpoint, {
     ...options,
     headers,
   });
+
+  // Some Vercel deployments expose api/index.ts as /api/index instead of
+  // mounting it at /api. Retry that route only for a 404 so authentication
+  // still works across both preview and production routing shapes.
+  if (response.status === 404 && endpoint.startsWith('/api/') && !endpoint.startsWith('/api/index/')) {
+    response = await fetch(`/api/index${endpoint.slice('/api'.length)}`, {
+      ...options,
+      headers,
+    });
+  }
 
   const responseText = await response.text();
   let data: { success?: boolean; error?: string; [key: string]: unknown };

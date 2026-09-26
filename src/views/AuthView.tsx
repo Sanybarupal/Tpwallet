@@ -114,8 +114,8 @@ export const AuthView: React.FC = () => {
       return;
     }
 
-    // Password verification is the authentication boundary. Do not route a
-    // successfully verified user through seed or biometric setup screens.
+    // Account creation is the only required step. Biometric setup is optional
+    // and must never trap the user in the onboarding flow.
     await finalizeAccountCreation();
   };
 
